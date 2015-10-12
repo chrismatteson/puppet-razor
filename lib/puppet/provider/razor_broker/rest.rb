@@ -39,7 +39,7 @@ Puppet::Type.type(:razor_broker).provide :rest, :parent => Puppet::Provider::Res
   
   def self.get_broker(name)
     rest = get_rest_info
-    url = "http://#{rest[:ip]}:#{rest[:port]}/api/collections/brokers/#{name}" 
+    url = "#{rest[:proto]}://#{rest[:ip]}:#{rest[:port]}/api/collections/brokers/#{name}" 
     
     get_object(name, url)    
   end

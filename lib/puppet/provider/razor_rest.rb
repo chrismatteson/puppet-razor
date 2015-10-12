@@ -1,6 +1,7 @@
 begin
   require 'rest-client' if Puppet.features.rest_client?
   require 'json' if Puppet.features.json?
+  require 'razor/config'
 rescue LoadError => e
   Puppet.info "Razor Puppet module requires 'rest-client' and 'json' ruby gems."
 end
@@ -29,10 +30,17 @@ class Puppet::Provider::Rest < Puppet::Provider
     # If the above changes, read the below variables from a config file
     
     ip = '127.0.0.1'
-    port = '8080'
+    if Razor.config['secure_api']
+      proto = 'https'
+      port = '8151'
+    else
+      proto = 'http'
+      port = '8080'
+    end
            
-    { :ip   => ip,
-      :port => port }
+    { :porto => porto,
+      :ip    => ip,
+      :port  => port }
   end
   
   def exists?    
@@ -57,7 +65,7 @@ class Puppet::Provider::Rest < Puppet::Provider
   
   def self.get_objects(type)    
     rest = get_rest_info
-    url = "http://#{rest[:ip]}:#{rest[:port]}/api/collections/#{type}"
+    url = "#{rest[:proto]}://#{rest[:ip]}:#{rest[:port]}/api/collections/#{type}"
     
     responseJson = get_json_from_url(url)
 
@@ -76,7 +84,7 @@ class Puppet::Provider::Rest < Puppet::Provider
     Puppet.debug("REST API => API: #{command}")    
     
     rest = self.class.get_rest_info
-    url = "http://#{rest[:ip]}:#{rest[:port]}/api/commands/#{command}"
+    url = "#{rest[:proto]}://#{rest[:ip]}:#{rest[:port]}/api/commands/#{command}"
     
     begin
       RestClient.post url, resourceHash.to_json, :content_type => :json

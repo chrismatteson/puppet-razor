@@ -53,7 +53,7 @@ Puppet::Type.type(:razor_policy).provide :rest, :parent => Puppet::Provider::Res
   
   def self.get_policy(name)
     rest = get_rest_info
-    url = "http://#{rest[:ip]}:#{rest[:port]}/api/collections/policies/#{name}" 
+    url = "#{rest[:proto]}://#{rest[:ip]}:#{rest[:port]}/api/collections/policies/#{name}" 
     
     get_object(name, url)    
   end

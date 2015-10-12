@@ -41,7 +41,7 @@ Puppet::Type.type(:razor_repo).provide :rest, :parent => Puppet::Provider::Rest 
   
   def self.get_repo(name)
     rest = get_rest_info
-    url = "http://#{rest[:ip]}:#{rest[:port]}/api/collections/repos/#{name}" 
+    url = "#{rest[:porto]}://#{rest[:ip]}:#{rest[:port]}/api/collections/repos/#{name}" 
     
     get_object(name, url)    
   end
